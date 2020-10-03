@@ -35,7 +35,7 @@ mics6$windex5<-factor(mics6$windex5,levels = c(1,2,3,4,5),
 colnames(mics4)
 colnames(mics6)
 mics4<-select(mics4,hID,cluster,livebirths,deadchild,marital,
-              welevel,MN1,MN2A,MN2B,MN2D,MN17A,MN17B,MN17D,MN18,MN3,wscore,
+              welevel,MN1,MN2A,MN2B,MN2D,MN17A,MN17B,MN17D,MN18,MN3,
               wmage,windex5,province,urban,helevel,hhsex,year,wmweight)
 colnames(mics4)
 colnames(mics6)
@@ -180,8 +180,7 @@ table(mics4$MN3)
 table(mics6$MN5)
 class(mics6$MN5)
 mics6$MN5<-as.numeric(mics6$MN5)
-colnames(mics4)[names(mics4)=="MN3"]<-"ANCtimes"
-colnames(mics6)[names(mics6)=="MN5"]<-"ANCtimes"
+
 
 ######dvp
 table(mics6$MN19A)
@@ -218,11 +217,7 @@ table(mics6$dv_am)
 mics6$dv_am<-factor(mics6$dv_am,levels = 0:1,
                     labels = c("No","Yes"))
 table(mics6$dv_am)
-
-
-
-
-
+mics6<-select(mics6,-c(PN13U,PN13N,PN22U,PN22N,wscore))
 str(mics4)
 str(mics6)
 mics4<-select(mics4,colnames(mics6))
@@ -256,13 +251,14 @@ table(mics4$ANC_doc)
 table(mics4$ANC_nm)
 table(mics4$ANCp)
 sum(is.na(mics4))
-sum(is.na(mics4$ANCtimes))
+
 sum(is.na(mics4$ANC))
 mics4<-mics4[!is.na(mics4$ANC),]
 sum(is.na(mics4$ANCp))
 table(mics4$ANCp)
 colnames(mics4)
 colnames(mics6)
+
 mics4<-select(mics4,colnames(mics6))
 colnames(mics4)
 new<-rbind(mics4,mics6)
