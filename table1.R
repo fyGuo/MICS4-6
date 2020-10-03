@@ -63,3 +63,4 @@ t<-tapply(df$helevel, df$year, table)
 t$ `2010` %>% prop.table()*100
 t$`2018` %>% prop.table()*100
 table(df$helevel,df$year) %>% chisq.test()
+
