@@ -321,7 +321,6 @@ df2010<-svydesign(~1,weights = ~wmweight,data=mics4)
 svyciprop(~dvp,design = df2010)
 svyciprop(~ANCp,design = df2010)
 
-
 df2018<-svydesign(~1,weights = ~wmweight,data=mics6)
 svyciprop(~dvp,design = df2018)
 svyciprop(~ANCp,design = df2018)
