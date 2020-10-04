@@ -1,0 +1,173 @@
+* Written by R;
+*  write.foreign(dfkivu, "dfkivu", "dfkivu.sas", package = "SAS") ;
+
+DATA  rdata ;
+LENGTH
+ hID $ 7
+ deadchild $ 3
+ marital $ 14
+ welevel $ 13
+ ANC $ 3
+ ANC_doc $ 3
+ ANC_am $ 3
+ ANC_nm $ 3
+ dv_doc $ 3
+ dv_nm $ 3
+ dv_am $ 3
+ ANCtimes $ 3
+ wmage $ 5
+ windex5 $ 9
+ province $ 16
+ urban $ 5
+ helevel $ 13
+ hhsex $ 6
+ province_year $ 21
+ upy $ 27
+ winyear $ 14
+;
+
+INFILE  "D:\Tang_new pooled model\MICS4-6\dfkivu" 
+     DSD 
+     LRECL= 265 ;
+INPUT
+ hID
+ cluster
+ livebirths
+ deadchild
+ marital
+ welevel
+ ANC
+ ANC_doc
+ ANC_am
+ ANC_nm
+ dv_doc
+ dv_nm
+ dv_am
+ ANCtimes
+ wmweight
+ wmage
+ windex5
+ province
+ urban
+ helevel
+ hhsex
+ year
+ ANCp
+ dvp
+ province_year
+ upy
+ winyear $ 
+;
+RUN;
+/*;firstly, RUN %MACRO to %MEND, then use %DOPREV*/
+%MACRO DOPREV(DATA_IN, DEPEND, PERCVAR, STRATA=RC IS_FEMALE, DO_FREQ=1,
+DATA_OUT=DOPREV_OUT, WHERE=(1 EQ 1),
+CLEANUP=1);
+/* Delete any datasets that DOPREV intends to create, in case creation
+fails leading to spurious results */
+%IF &CLEANUP = 1 %THEN %DO;
+PROC DATASETS LIBRARY=WORK;
+DELETE &DATA_OUT DOPREV_1 DOPREV_2 DOPREV_3 DOPREV_4
+DOPREV_WEIGHTS;
+RUN;
+QUIT;
+%END;
+/* Weights: proportional to N in the _&STRATA_ groups */
+PROC MEANS DATA=&DATA_IN NWAY NOPRINT;
+WHERE &WHERE;
+CLASS &STRATA;
+VAR &DEPEND;
+OUTPUT N=WEIGHT OUT=DOPREV_WEIGHTS;
+RUN;
+/* Raw values */
+PROC MEANS DATA=&DATA_IN NWAY NOPRINT;
+WHERE &WHERE;
+CLASS &PERCVAR &STRATA;
+VAR &DEPEND;
+OUTPUT MEAN=MEAN N=N STDERR=SEM STDDEV=STDDEV OUT=DOPREV_1;
+RUN;
+PROC SORT DATA=DOPREV_1;
+BY &STRATA;
+RUN;
+/* Merge weights, generate weight-value combinations for summation */
+DATA DOPREV_2;
+MERGE DOPREV_1 DOPREV_WEIGHTS;
+BY &STRATA;
+VAR = SEM*SEM;
+POPVAR = STDDEV*STDDEV;
+/* Change variance to that suitable for a proportion if necessary */
+%IF &DO_FREQ = 1 %THEN %DO;
+VAR = MEAN *(1-MEAN) /N;
+%END;
+WMEAN = WEIGHT*MEAN;
+W2VAR = WEIGHT*WEIGHT*VAR;
+W2 = WEIGHT*WEIGHT;
+W2POPVAR = WEIGHT*WEIGHT*POPVAR;
+DROP _TYPE_ _FREQ_ SEM;
+RUN;
+/* Now, we compute sums for wmean, n, w2var, w2 and weight across the
+values of the
+&PERCVAR variables
+Using proc means to do this is quite a bit easier than attempting to
+automate
+a datastep and using retain */
+PROC MEANS DATA=DOPREV_2 NOPRINT NWAY;
+CLASS &PERCVAR;
+VAR WMEAN W2VAR W2 WEIGHT N W2POPVAR;
+OUTPUT OUT=DOPREV_3 SUM=SUMWMEAN SUMW2VAR SUMW2 SUMW N SUMW2POPVAR;
+RUN;
+* Calculation of crude means or prevalences;
+PROC MEANS DATA=&DATA_IN NWAY NOPRINT;
+WHERE &WHERE;
+CLASS &PERCVAR;
+VAR &DEPEND;
+OUTPUT MEAN=RAWMEAN N=RAWN STDERR=RAWSEM STDDEV=RAWSTDDEV
+OUT=DOPREV_4;
+RUN;
+DATA DOPREV_4;
+SET DOPREV_4;
+/* Change SEM to that suitable for a proportion if necessary */
+%IF &DO_FREQ = 1 %THEN %DO;
+RAWSEM = SQRT(RAWMEAN *(1-RAWMEAN) /RAWN);
+%END;
+RAWLOWCI = RAWMEAN - 1.96*RAWSEM;
+RAWHIGHCI = RAWMEAN + 1.96*RAWSEM;
+KEEP &PERCVAR RAWMEAN RAWSEM RAWLOWCI RAWHIGHCI;
+RUN;
+/* Finally, use the summed values to compute the adjusted means */
+DATA &DATA_OUT;
+MERGE DOPREV_3 DOPREV_4;
+BY &PERCVAR;
+ADJMEAN = SUMWMEAN/SUMW;
+ADJVAR = SUMW2VAR/(SUMW*SUMW);
+ADJPOPVAR = SUMW2POPVAR/(SUMW*SUMW);
+ADJSEM = SQRT(ADJVAR);
+ADJSTD = SQRT(ADJPOPVAR);
+LOWCI = ADJMEAN - 1.96*ADJSEM;
+HIGHCI = ADJMEAN + 1.96*ADJSEM;
+VARIABLE = "&DEPEND";
+DATASET = "&DATA_IN";
+WHERE = "&WHERE";
+KEEP &PERCVAR ADJMEAN ADJSEM LOWCI HIGHCI N VARIABLE DATASET WHERE
+RAWMEAN RAWSEM RAWLOWCI RAWHIGHCI SUMW;
+RUN;
+/* Remove temporary datasets */
+%IF &CLEANUP = 1 %THEN %DO;
+PROC DATASETS LIBRARY=WORK;
+DELETE DOPREV_1 DOPREV_2 DOPREV_3 DOPREV_4 DOPREV_WEIGHTS;
+RUN;
+QUIT;
+%END;
+%MEND;
+/*run macro*/
+%DOPREV(rdata, dvp, winyear,
+STRATA=wmage welevel marital helevel hhsex urban, DO_FREQ=1, DATA_OUT=name);
+/*For example %DOPREV(ana.why, diabetes_diag, income, STRATA=age edu
+occu, DO_FREQ=1, DATA_OUT=incomefemale); */
+/*;Note it seems to me that these variables should be categorical*/
+proc export data = name
+outfile = "D:\Tang_new pooled model\MICS4-6\dvp_kivu_wealth.csv" 
+ dbms=csv 
+replace;
+
+run;
