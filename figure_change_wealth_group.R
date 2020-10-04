@@ -136,6 +136,9 @@ p3<-ggplot(other,aes(x=wealth,y=ADJMEAN*100,fill=as.factor(year)))+
         theme(plot.title = element_text(hjust=0.5))
         
 ################################
-tiff("wealth_change.tiff",width=400,heigh=200,units = "mm",res = 600)
+tiff("wealth_change.tiff",width=400,height=200,units = "mm",res = 600)
+ggplot2.multiplot(p1,p2,p3,cols=3)
+dev.off()
+pdf("wealth_change.pdf",width=15,height =7.5)
 ggplot2.multiplot(p1,p2,p3,cols=3)
 dev.off()
