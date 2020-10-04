@@ -317,6 +317,11 @@ table(mics6$dvp) %>% prop.table()
 sapply(mics6, function(x){is.na(x) %>% sum})
 library(survey)
 # after weight we can approximately the same proportion as report
-df<-svydesign(~1,weights = ~wmweight,data=mics6)
-svyciprop(~dvp,design = df)
-svyciprop(~ANCp,design = df)
+df2010<-svydesign(~1,weights = ~wmweight,data=mics4)
+svyciprop(~dvp,design = df2010)
+svyciprop(~ANCp,design = df2010)
+
+
+df2018<-svydesign(~1,weights = ~wmweight,data=mics6)
+svyciprop(~dvp,design = df2018)
+svyciprop(~ANCp,design = df2018)
