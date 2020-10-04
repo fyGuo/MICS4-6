@@ -13,8 +13,10 @@ sapply(df, function(x){sum(is.na(x))})
 # we replace NAs in ANCtimes with 0
 df$ANCtimes[is.na(df$ANCtimes)]<-0
 sapply(df, function(x){sum(is.na(x))})
-df<-df[!is.na(df$ANC_am),]
+df<-df[!is.na(df$ANC_doc),]
 sapply(df, function(x){sum(is.na(x))})
+dim(df)
+df<-df[!is.na(df$ANC),]
 #now it is clean
 #####################################################
 # let's see some basic characterics to see if 3 surveys are comparable
