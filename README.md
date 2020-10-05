@@ -23,7 +23,7 @@ We used **prepare for SAS macro_general.R** to make SAS files and to run SAS.
 1. We used **anc_province_year.txt** to compute adjusted prevalence of antenatal care in each province in SAS, and we got *ANCp_province_year.csv*.  
 2. We used **dvp_province_year.txt** to compute adjusted prevalence of antenatal care in each province in SAS, and we got *ANCp_province_year.csv*.  
 3. Using *ANCp_province_year.csv* and *ANCp_province_year.csv* we could run **ANCp_province_year.csv** and **dvp_map_byprovince.R** to get two maps. 
-![](maizePal.png)
+![](wealth_change.pdf)
 # Draw changes in different wealth groups in three regions
 ## For Kasai region
 1. we used **anc_kasai_wealth.txt** to compute adjusted prevalence of antenatal care in each wealth groups in Kasai in SAS and we got *anc_kasai_wealth.csv*.  
