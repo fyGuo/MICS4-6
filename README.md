@@ -22,10 +22,10 @@ We used **prepare for SAS macro_general.R** to make SAS files and to run SAS.
 # Draw maps
 1. We used **anc_province_year.txt** to compute adjusted prevalence of antenatal care in each province in SAS, and we got *ANCp_province_year.csv*.  
 2. We used **dvp_province_year.txt** to compute adjusted prevalence of antenatal care in each province in SAS, and we got *ANCp_province_year.csv*.  
-3. Using *ANCp_province_year.csv* and *ANCp_province_year.csv* we could run **ANCp_province_year.csv** and **dvp_map_byprovince.R** to get two maps. 
-The change of adjusted coverage of Antenatal care in the DRC from 2010 to 2018
+3. Using *ANCp_province_year.csv* and *ANCp_province_year.csv* we could run **ANCp_province_year.R** and **dvp_map_byprovince.R** to get two maps.   
+**The change of adjusted coverage of Antenatal care in the DRC from 2010 to 2018**
 ![](Figures/map_anc.png)
-The change of adjusted coverage skilled birth attendance in the DRC from 2010 to 2018
+**The change of adjusted coverage skilled birth attendance in the DRC from 2010 to 2018**
 ![](Figures/map_dvp.png)
 # Draw changes in different wealth groups in three regions
 ## For Kasai region
@@ -37,8 +37,10 @@ The change of adjusted coverage skilled birth attendance in the DRC from 2010 to
 ## For Other provinces
 1. we used **anc_other_wealth.txt** to compute adjusted prevalence of antenatal care in each wealth groups in other provinces in SAS and we got *anc_other_wealth.csv*.  
 2. we used **dvp_other_wealth.txt** to compute adjusted prevalence of antenatal care in each wealth groups in other provinces in SAS and we got *dvp_other_wealth.csv*.  
-## Draw the map
-1. We used all the csv files in this section to run  **figure_change_wealth_group.R** to draw the figure *wealth_change.pdf*. 
+## Draw the figure
+1. We used all the csv files in this section to run  **figure_change_wealth_group.R** to draw the figure.  
+**The trends of adjusted coverage of Antenatal care and skilled birth attendance for women with different wealth status from 2010 to 2018**
+![](Figures/wealth_change.png)
 
 # Subgroups analysis on urban and rural
 1. We used **anc_urban_province_year.txt** to compute the adjusted prevalence of antenatal care in each provinces and in rural/urban, and we got *anc_urban_province_year.csv*.  
