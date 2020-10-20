@@ -1,22 +1,23 @@
-df<-read.csv("merge4_6.csv")
+
 library(dplyr)
 library(survey)
-summary(df)
-str(df)
-sum(df$wmweight)
-# let's check the missing values in the data
-sapply(df, function(x){sum(is.na(x))})
-df<-df[!is.na(df$helevel),]
-sapply(df, function(x){sum(is.na(x))})
-df<-df[!is.na(df$marital),]
-sapply(df, function(x){sum(is.na(x))})
-# we replace NAs in ANCtimes with 0
-df$ANCtimes[is.na(df$ANCtimes)]<-0
-sapply(df, function(x){sum(is.na(x))})
-df<-df[!is.na(df$ANC_doc),]
-sapply(df, function(x){sum(is.na(x))})
+# prepraration for the adjusted prevalence
+library(dplyr)
+library(foreign)
+df<-read.csv("merge4_6.csv")
+table(df$province)
 dim(df)
-df<-df[!is.na(df$ANC),]
+table(df$year)
+
+sapply(df, function(x){is.na(x) %>% sum})
+df<-df[!is.na(df$helevel),]
+sapply(df, function(x){is.na(x) %>% sum})
+df<-df[!is.na(df$marital),]
+sapply(df, function(x){is.na(x) %>% sum})
+sapply(df, function(x){is.na(x) %>% sum})
+df<-df[!is.na(df$ANC_doc),]
+sapply(df, function(x){is.na(x) %>% sum})
+dim(df)
 #now it is clean
 #####################################################
 # let's see some basic characterics to see if 3 surveys are comparable
