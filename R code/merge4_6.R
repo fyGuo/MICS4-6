@@ -1,10 +1,11 @@
 library(dplyr)
-mics4<-read.csv("merge_mics4.csv")
+mics4<-read.csv("Merged data\\merge_mics4.csv")
 # check the NA in mics4
 sapply(mics4,function(x) {is.na(x) %>% sum()})
 # you can see there are 8042 NAs in MN1 it is very likely due to
 # year
 mics4<-mics4[!is.na(mics4$MN1),]
+mics4$year <- 2010
 sapply(mics4,function(x) {is.na(x) %>% sum()})
 # there are still 575 people MN3 is how many antenatal care times
        
@@ -18,7 +19,7 @@ sapply(mics6,function(x) {is.na(x) %>% sum()})
 dim(mics4)
 dim(mics6)
 # the sample size is reasonable
-
+mics6 <- select(mics6, -"X")
 
 str(mics4)
 str(mics6)
@@ -37,9 +38,6 @@ colnames(mics6)
 mics4<-select(mics4,hID,cluster,livebirths,deadchild,marital,
               welevel,MN1,MN2A,MN2B,MN2D,MN17A,MN17B,MN17D,MN18,MN3,
               wmage,windex5,province,urban,helevel,hhsex,year,wmweight)
-colnames(mics4)
-colnames(mics6)
-mics6<-select(mics6,-X)
 colnames(mics4)
 colnames(mics6)
 # birth place MN18 in mics4 but there is no information in mics2
@@ -258,7 +256,7 @@ sum(is.na(mics4$ANCp))
 table(mics4$ANCp)
 colnames(mics4)
 colnames(mics6)
-
+mics6 <- select(mics6, -MN5)
 mics4<-select(mics4,colnames(mics6))
 colnames(mics4)
 new<-rbind(mics4,mics6)
@@ -268,6 +266,7 @@ table(new$dvp)
 table(new$dvp,new$year)
 is.na(new) %>% sum()
 sapply(new, function(x){is.na(x)%>% sum()})
+
 ###
 table(new$marital)
 new$marital[new$marital=="married"|new$marital==
