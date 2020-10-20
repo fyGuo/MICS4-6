@@ -10,7 +10,7 @@ sapply(mics4,function(x) {is.na(x) %>% sum()})
 # there are still 575 people MN3 is how many antenatal care times
        
 str(mics4)
-mics6<-read.csv("merge_mics6.csv")
+mics6<-read.csv("Merged Data\\merge_mics6.csv")
 # check the missing value in mics6
 sapply(mics6,function(x) {is.na(x) %>% sum()})
 mics6<-mics6[!is.na(mics6$MN2),]

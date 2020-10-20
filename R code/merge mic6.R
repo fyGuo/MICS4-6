@@ -9,7 +9,7 @@ library(data.table)
 hh<-read_dta("D:\\tang_data\\hh.dta")
 hh<-dplyr::select(hh,HH1,HH2,HH12,HC1A,HC1B,HC2,HH7,HH6,helevel,HHSEX,HH17,PSU)
 hh$hID<-paste(hh$HH1,hh$HH2,sep = "_")
-sum(duplicated(hh$HH))
+sum(duplicated(hh$hID))
 length(unique(hh$HH1))
 length(unique(hh$PSU))
 wm<-read_dta("D:\\tang_data\\wm.dta")
@@ -77,6 +77,7 @@ table(new$wmage)
 # so we don't need WB3Y anymore
 new<-select(new,-WB3Y)
 str(new)
+new
 # CM11 total number of livebirths
 colnames(new)[names(new)=='CM11']<-"livebirths"
 table(new$livebirths)
@@ -95,7 +96,9 @@ new$MA1<-factor(new$MA1,levels = 1:3,
                 labels=c("married","living with a partner","single"))
 table(new$MA1)
 colnames(new)[names(new)=='MA1']<-"marital"
+
 str(new)
+new
 # WM6Y survey year we can drop it out
 new<-select(new,-WM6Y)
 # welevel women's education level
@@ -108,6 +111,7 @@ table(new$welevel)
 new$welevel<-factor(new$welevel,levels = 1:3, 
                     labels = c("below primary","primary","secondary+"))
 str(new)
+new
 # WB4 AGE 15-24	1
 #      AGE 25-4 2 so we drop it
 new<-select(new,-WB4)
@@ -117,13 +121,17 @@ str(new)
 # we use wscore instead of windex5
 summary(new$wscore)
  str(new)
-#  check the CM17 here Check BH4: 
+new
+ #  check the CM17 here Check BH4: 
  #Last birth occurred within the last 2 years, that is, since (month of interview) in (year of interview minus 2)?
 table(new$CM17)
-new<-new[new$CM17!=0,] 
+
+new<-new[new$CM17==1 & is.na(new$CM17)!=T,] 
+new
 new<-select(new,-CM17)
 dim(new)
 str(new)
+new
 # HH12 the consent
 table(new$HH12)
 new<-select(new,-HH12)
@@ -132,6 +140,7 @@ str(new)
 # HC1B mother language of the household head
 # HC2 ethnics of the household head
 new<-select(new,-HC1A,-HC1B,-HC2)
+new
 str(new)
 # HH7 province 
 table(new$HH7)
@@ -175,4 +184,4 @@ str(new)
 new<-select(new,-HH17,-PSU)
 dim(new)
 str(new)
-write.csv(new,"merge_mics6.csv")
+write.csv(new,"Merged Data//merge_mics6.csv")
