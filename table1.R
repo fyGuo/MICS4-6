@@ -1,10 +1,9 @@
 
-library(dplyr)
 library(survey)
 # prepraration for the adjusted prevalence
 library(dplyr)
 library(foreign)
-df<-read.csv("merge4_6.csv")
+df<-read.csv("Merged data\\merge4_6.csv")
 table(df$province)
 dim(df)
 table(df$year)
@@ -18,6 +17,8 @@ sapply(df, function(x){is.na(x) %>% sum})
 df<-df[!is.na(df$ANC_doc),]
 sapply(df, function(x){is.na(x) %>% sum})
 dim(df)
+table(df$year)
+
 #now it is clean
 #####################################################
 # let's see some basic characterics to see if 3 surveys are comparable
@@ -67,3 +68,6 @@ t$ `2010` %>% prop.table()*100
 t$`2018` %>% prop.table()*100
 table(df$helevel,df$year) %>% chisq.test()
 
+# marital status
+t <- tapply(df$marital, df$year, table)
+t
