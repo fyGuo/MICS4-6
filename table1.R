@@ -70,4 +70,6 @@ table(df$helevel,df$year) %>% chisq.test()
 
 # marital status
 t <- tapply(df$marital, df$year, table)
+t$`2010` %>% prop.table() * 100
+t$`2018` %>% prop.table() * 100
 rbind(t[[1]], t[[2]]) %>% chisq.test()
